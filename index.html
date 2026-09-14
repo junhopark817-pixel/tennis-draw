@@ -70,6 +70,44 @@
 .share-launch-btn{width:100%;font-size:15px;padding:12px 14px;border-radius:12px}
 .share-launch-note{text-align:center;margin-top:6px;font-size:11px}
 @media(max-width:430px){.share-launch-card{padding:7px 8px}.share-launch-btn{font-size:14px;padding:11px 10px}.share-launch-note{font-size:10px}}
+
+/* v7 Kakao/iPhone share layout */
+.share-wrap{width:100%;max-width:100%;margin:0 auto;padding:14px 14px 18px;background:#fff}
+.share-title{font-size:24px;line-height:1.15;margin:2px 0 5px}
+.share-sub{font-size:14px;margin-bottom:12px}
+.share-grid{width:100%;grid-template-columns:repeat(var(--share-cols,1),minmax(0,1fr));gap:10px}
+.share-court{width:100%;border:2px solid #b8c7c1;border-radius:14px}
+.share-court h3{font-size:17px;padding:8px 8px}
+.share-match{padding:8px 9px 7px}
+.share-match-head{font-size:12px;margin-bottom:4px}
+.share-teams{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);gap:4px}
+.share-team{font-size:16px;line-height:1.2;letter-spacing:-.25px}
+.share-vs{font-size:12px}
+.share-score{font-size:12px;margin-top:3px}
+.share-hint{font-size:11px;margin-top:8px}
+.share-overlay.clean .share-hint{display:none!important}
+.share-overlay.clean .share-wrap{padding-bottom:12px}
+@media(max-width:430px){
+ .share-wrap{padding:10px 12px 14px}
+ .share-title{font-size:22px}
+ .share-sub{font-size:13px;margin-bottom:9px}
+ .share-grid{gap:8px}
+ .share-court h3{font-size:16px;padding:7px}
+ .share-match{padding:7px 8px 6px}
+ .share-match-head{font-size:11px}
+ .share-team{font-size:15px}
+ .share-vs{font-size:11px}
+}
+.share-overlay.dense .share-title{font-size:20px}
+.share-overlay.dense .share-sub{font-size:11.5px;margin-bottom:7px}
+.share-overlay.dense .share-grid{gap:6px}
+.share-overlay.dense .share-court h3{font-size:14px;padding:5px}
+.share-overlay.dense .share-match{padding:4px 6px}
+.share-overlay.dense .share-match-head{font-size:9.5px;margin-bottom:2px}
+.share-overlay.dense .share-team{font-size:12px}
+.share-overlay.dense .share-vs{font-size:9px}
+.share-overlay.dense .share-score{font-size:10px}
+
 </style>
 </head>
 <body>
@@ -98,8 +136,8 @@
 
   <section id="settings" class="page">
     <div class="card"><h2>경기 수</h2>
-      <div class="grid3"><div class="field"><label>남복</label><input id="mensGames" type="number" min="0" max="8" value="2"></div><div class="field"><label>혼복</label><input id="mixedGames" type="number" min="0" max="8" value="2"></div><div class="field"><label>여복</label><input id="womensGames" type="number" min="0" max="8" value="2"></div></div>
-      <div class="row" style="margin-top:10px"><span class="summary" id="totalGames">총 6경기</span><span class="notice">권장 합계 4~8경기</span></div>
+      <div class="grid3"><div class="field"><label>남복</label><input id="mensGames" type="number" min="0" max="8" value="0"></div><div class="field"><label>혼복</label><input id="mixedGames" type="number" min="0" max="8" value="4"></div><div class="field"><label>여복</label><input id="womensGames" type="number" min="0" max="8" value="0"></div></div>
+      <div class="row" style="margin-top:10px"><span class="summary" id="totalGames">총 4경기</span><span class="notice">권장 합계 4~8경기</span></div>
     </div>
     <div class="card"><h2>운영 방식</h2><div class="grid"><div class="field"><label>파트너 방식</label><select id="partnerMode"><option>파트너 변경</option><option>고정 파트너</option></select></div><div class="field"><label>코트 수</label><select id="courtCount"><option selected>1</option><option>2</option><option>3</option><option>4</option></select></div></div></div>
     <div class="card"><h2>코트별 허용 경기 종류</h2><div id="courtRules"></div><p class="notice">예: 1코트에서 남복+혼복만 허용하고, 2코트는 여복만 허용할 수 있습니다.</p></div>
