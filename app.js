@@ -74,14 +74,32 @@ function buildSchedule(){if(players.length<4)return {error:'참가자는 최소 
 function generate(){const r=buildSchedule();if(r.error)return toast(r.error);schedule=r.schedule;history={};initStats();renderSchedule();renderPlayersPlanned(r.played);renderRanking();switchPage('schedule')}
 function renderPlayersPlanned(played){document.querySelectorAll('.player').forEach(()=>{}); $('playerCount').textContent=`${players.length}명 · 예정 ${Object.values(played).reduce((a,b)=>a+b,0)/4}경기`}
 function initStats(){stats={};players.forEach(p=>stats[p.name]={played:0,win:0,draw:0,loss:0,gf:0,ga:0})}
-function renderSchedule(){if(!schedule.length){$('scheduleArea').innerHTML='<div class="empty">아직 생성된 대진이 없습니다.</div>';return}const courts=+$('courtCount').value;let html=`<div class="row"><h2 class="grow" style="margin:0">전체 대진표</h2><span class="summary">총 ${schedule.length}경기</span><button class="btn small" onclick="openShareView()">📷 공유용 한 화면</button></div>`;for(let c=1;c<=courts;c++){const ms=schedule.filter(m=>m.court===c);html+=`<div class="court"><h3>${c}코트 <span class="meta">(${[...courtRules[c]].join('+')})</span></h3>${ms.length?ms.map(matchHTML).join(''):'<div class="empty">배정 경기 없음</div>'}</div>`}$('scheduleArea').innerHTML=html}
-
+function renderSchedule(){
+  if(!schedule.length){$('scheduleArea').classList.remove('capture-mode');$('scheduleArea').innerHTML='<div class="empty">아직 생성된 대진이 없습니다.</div>';return}
+  const courts=+$('courtCount').value;
+  let html=`<div class="schedule-toolbar"><h2 class="grow">전체 대진표</h2><span class="summary">총 ${schedule.length}경기</span><button class="btn small secondary capture-exit" onclick="toggleCaptureMode(false)">입력 화면</button></div><div class="courts-grid">`;
+  for(let c=1;c<=courts;c++){
+    const ms=schedule.filter(m=>m.court===c);
+    html+=`<div class="court"><h3>${c}코트 <span class="meta">(${[...courtRules[c]].join('+')})</span></h3>${ms.length?ms.map(matchHTML).join(''):'<div class="empty">배정 경기 없음</div>'}</div>`;
+  }
+  html+='</div>';
+  $('scheduleArea').innerHTML=html;
+}
+window.toggleCaptureMode=(on)=>{
+  const el=$('scheduleArea');
+  if(on){el.classList.add('capture-mode');window.scrollTo({top:0,behavior:'smooth'});toast('캡처 모드: 점수 입력란을 숨겼습니다.');}
+  else el.classList.remove('capture-mode');
+};
 function shareMatchHTML(m){const score=m.done?`<div class="share-score">${esc(String(m.s1))} : ${esc(String(m.s2))}</div>`:'';return `<div class="share-match"><div class="share-match-head"><span>${m.game}경기 · 순서 ${m.wave}</span><span class="share-match-type">${m.type}</span></div><div class="share-teams"><div class="share-team">${esc(m.team1.join(' / '))}</div><div class="share-vs">VS</div><div class="share-team">${esc(m.team2.join(' / '))}</div></div>${score}</div>`}
 window.openShareView=()=>{if(!schedule.length)return toast('먼저 대진을 생성하세요.');const courts=+$('courtCount').value;const now=new Date();const date=`${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;let html=`<h1 class="share-title">🎾 테니스 복식 대진표</h1><div class="share-sub">${date} · 총 ${schedule.length}경기 · ${players.length}명 참가</div><div class="share-grid">`;for(let c=1;c<=courts;c++){const ms=schedule.filter(m=>m.court===c);html+=`<section class="share-court"><h3>${c}코트 · ${[...courtRules[c]].join('+')}</h3>${ms.length?ms.map(shareMatchHTML).join(''):'<div class="share-match"><div class="share-team">배정 경기 없음</div></div>'}</section>`}html+='</div><div class="share-hint">스크린샷 준비를 누르면 버튼이 숨겨집니다. 화면을 한 번 누르면 다시 표시됩니다.</div>';$('shareWrap').innerHTML=html;$('shareOverlay').classList.add('show');$('shareOverlay').classList.remove('clean');document.body.style.overflow='hidden'};
 window.closeShareView=()=>{$('shareOverlay').classList.remove('show','clean');document.body.style.overflow=''};
 window.cleanShareView=()=>{$('shareOverlay').classList.add('clean')};
 window.shareOverlayTap=e=>{if($('shareOverlay').classList.contains('clean')){$('shareOverlay').classList.remove('clean');e.stopPropagation()}};
-function matchHTML(m){const result=m.done?(+m.s1===+m.s2?'무승부':(+m.s1>+m.s2?'팀1 승':'팀2 승')):'점수 입력';return `<div class="match"><div class="match-head"><span>${m.game}경기 · 순서 ${m.wave}</span><strong>${m.type}</strong></div><div class="teams"><div class="team">${esc(m.team1.join(' / '))}<div class="meta">실력합 ${m.lv1}</div></div><div class="vs">VS</div><div class="team">${esc(m.team2.join(' / '))}<div class="meta">실력합 ${m.lv2}</div></div></div><div class="score-row"><input class="score" type="number" min="0" value="${m.s1}" placeholder="0" onchange="setScore('${m.id}',1,this.value)"><span>:</span><input class="score" type="number" min="0" value="${m.s2}" placeholder="0" onchange="setScore('${m.id}',2,this.value)"><button class="btn small" onclick="saveScore('${m.id}')">저장</button></div><div class="status">${result}</div></div>`}
+function matchHTML(m){
+  const result=m.done?(+m.s1===+m.s2?'무승부':(+m.s1>+m.s2?'팀1 승':'팀2 승')):'점수 입력';
+  const capScore=m.done?`${esc(String(m.s1))} : ${esc(String(m.s2))}`:'';
+  return `<div class="match"><div class="match-head"><span>${m.game}경기 · 순서 ${m.wave}</span><strong>${m.type}</strong></div><div class="teams"><div class="team">${esc(m.team1.join(' / '))}<div class="meta">실력합 ${m.lv1}</div></div><div class="vs">VS</div><div class="team">${esc(m.team2.join(' / '))}<div class="meta">실력합 ${m.lv2}</div></div></div><div class="capture-score">${capScore}</div><div class="score-row"><input class="score" type="number" min="0" value="${m.s1}" placeholder="0" onchange="setScore('${m.id}',1,this.value)"><span>:</span><input class="score" type="number" min="0" value="${m.s2}" placeholder="0" onchange="setScore('${m.id}',2,this.value)"><button class="btn small" onclick="saveScore('${m.id}')">저장</button></div><div class="status">${result}</div></div>`;
+}
 window.setScore=(id,n,v)=>{const m=schedule.find(x=>x.id===id);if(m)m[n===1?'s1':'s2']=v};
 window.saveScore=id=>{const m=schedule.find(x=>x.id===id);if(!m)return;if(m.s1===''||m.s2==='')return toast('두 팀 점수를 모두 입력하세요.');if(+m.s1<0||+m.s2<0)return toast('점수는 0 이상이어야 합니다.');m.done=true;recalcStats();renderSchedule();renderRanking()};
 function recalcStats(){initStats();for(const m of schedule.filter(x=>x.done)){const a=+m.s1,b=+m.s2;for(const n of m.team1){let s=stats[n];s.played++;s.gf+=a;s.ga+=b;a>b?s.win++:a<b?s.loss++:s.draw++}for(const n of m.team2){let s=stats[n];s.played++;s.gf+=b;s.ga+=a;b>a?s.win++:b<a?s.loss++:s.draw++}}}

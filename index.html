@@ -35,6 +35,41 @@
 @media(max-width:350px){.share-team{font-size:9.5px}.share-grid{gap:4px}.share-match{padding:3px}.share-court h3{font-size:11px}}
 
 @media(max-width:700px){.grid3{grid-template-columns:1fr 1fr 1fr}.rank{grid-template-columns:28px 1fr repeat(5,36px);font-size:11px}.card{padding:12px}.app{padding-left:9px;padding-right:9px}.team{font-size:13px}}
+
+/* v4 compact schedule + screenshot mode */
+#scheduleArea{padding:10px 12px}
+.schedule-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.schedule-toolbar h2{margin:0!important;font-size:17px}.schedule-toolbar .grow{flex:1}
+.court{margin:7px 0}.court h3{margin:0 0 4px;font-size:14px}
+.match{padding:6px 8px;margin:4px 0;border-radius:10px}
+.match-head{font-size:10.5px;line-height:1.15}
+.teams{margin-top:4px;gap:4px;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr)}
+.team{font-size:13px;line-height:1.15}.team .meta{font-size:9.5px;margin-top:1px}.vs{font-size:9px}
+.score-row{gap:4px;margin-top:5px}.score{width:48px;padding:5px 4px;border-radius:8px;font-size:12px}.score-row .btn{padding:5px 7px;font-size:11px}
+.status{font-size:10px;margin-top:3px}.capture-score{display:none}
+#scheduleArea.capture-mode{padding:7px 8px!important;box-shadow:none}
+#scheduleArea.capture-mode .schedule-toolbar{margin-bottom:3px}
+#scheduleArea.capture-mode .schedule-toolbar .summary{font-size:12px}
+#scheduleArea.capture-mode .court{margin:4px 0}
+#scheduleArea.capture-mode .court h3{font-size:12px;margin-bottom:2px}
+#scheduleArea.capture-mode .match{padding:4px 5px;margin:2px 0;border-radius:7px}
+#scheduleArea.capture-mode .match-head{font-size:9px}
+#scheduleArea.capture-mode .teams{margin-top:2px}
+#scheduleArea.capture-mode .team{font-size:11.5px}
+#scheduleArea.capture-mode .team .meta,#scheduleArea.capture-mode .score-row,#scheduleArea.capture-mode .status{display:none!important}
+#scheduleArea.capture-mode .capture-score{display:block;text-align:center;font-size:9.5px;font-weight:800;color:var(--accent);margin-top:1px}
+#scheduleArea.capture-mode .capture-hide{display:none!important}
+#scheduleArea.capture-mode .capture-exit{display:inline-block!important}
+.capture-exit{display:none!important}
+@media(min-width:700px){#scheduleArea.capture-mode .courts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 9px;align-items:start}}
+@media(max-width:430px){.app{padding-left:7px;padding-right:7px}#scheduleArea{padding:8px}.match{padding:5px 6px}.team{font-size:12px}.score{width:44px}.schedule-toolbar .btn{font-size:11px;padding:6px 7px}#scheduleArea.capture-mode .team{font-size:10.5px}#scheduleArea.capture-mode .match-head{font-size:8.5px}}
+
+
+/* v5 always-visible share button */
+.share-launch-card{padding:9px 10px;margin-bottom:6px}
+.share-launch-btn{width:100%;font-size:15px;padding:12px 14px;border-radius:12px}
+.share-launch-note{text-align:center;margin-top:6px;font-size:11px}
+@media(max-width:430px){.share-launch-card{padding:7px 8px}.share-launch-btn{font-size:14px;padding:11px 10px}.share-launch-note{font-size:10px}}
 </style>
 </head>
 <body>
@@ -71,7 +106,13 @@
     <div class="card" id="fixedCard"><h2>고정 파트너</h2><div id="fixedPartners"></div><p class="notice">고정 파트너 방식일 때만 적용됩니다. 남복/여복/혼복 조건과 맞지 않는 팀은 해당 경기 종류에 사용할 수 없습니다.</p></div>
   </section>
 
-  <section id="schedule" class="page"><div id="scheduleArea" class="card"><div class="empty">아직 생성된 대진이 없습니다.</div></div></section>
+  <section id="schedule" class="page">
+    <div class="card share-launch-card">
+      <button class="btn share-launch-btn" type="button" onclick="openShareView()">📷 공유용 한 화면</button>
+      <div class="notice share-launch-note">대진 생성 후 누르면 점수 입력칸 없이 코트별 전체 대진을 한 화면으로 보여줍니다.</div>
+    </div>
+    <div id="scheduleArea" class="card"><div class="empty">아직 생성된 대진이 없습니다.</div></div>
+  </section>
   <section id="ranking" class="page"><div class="card"><h2>개인 순위</h2><div id="rankingArea"></div></div></section>
 </div>
 
@@ -87,5 +128,5 @@
 <div class="footer-actions"><div class="inner"><button class="btn" id="generate">전체 대진 생성</button><button class="btn secondary" id="resetMatches">대진 초기화</button></div></div>
 
 <div class="modal" id="rosterModal"><div class="sheet"><div class="row"><h2 class="grow">저장 참가자 선택</h2><button class="btn secondary small" id="closeRoster">닫기</button></div><div class="row"><button class="btn secondary small" id="selectAll">전체 선택</button><button class="btn secondary small" id="selectNone">전체 해제</button><span id="selectedCount" class="summary"></span></div><div id="rosterList"></div><button class="btn" id="loadSelected" style="width:100%;margin-top:10px">선택 참가자 불러오기</button></div></div>
-<script src="app.js"></script>
+<script src="app.js?v=5"></script>
 </body></html>
